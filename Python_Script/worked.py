@@ -73,7 +73,7 @@ class NonStandardAminoAcidProcessor:
             return pdb_file
 
     def add_terminal_groups_with_pymol(self, input_file):
-        """Call the manually created PyMOL script."""
+        """Call PyMOL script"""
         try:
             output_file = f"{os.path.splitext(input_file)[0]}_capped.pdb"
             pymol_command = f"pymol -c add_capping.pml {input_file} {output_file}"
@@ -83,7 +83,7 @@ class NonStandardAminoAcidProcessor:
             print(f"Error in running PyMOL: {str(e)}")
             return input_file
 
-    def add_partial_charges(self, pdb_file):
+        def add_partial_charges(self, pdb_file):
         """Add Gasteiger partial charges using RDKit and save as .mol2 using Open Babel."""
         try:
             mol = Chem.MolFromPDBFile(pdb_file, removeHs=False)
@@ -91,28 +91,20 @@ class NonStandardAminoAcidProcessor:
                 print(f"Error: Unable to parse {pdb_file} for charge assignment.")
                 return pdb_file
 
-            # Ensure hydrogens are present before computing charges
+            # Ensure hydrogens are present
             mol = Chem.AddHs(mol)
 
             # Compute Gasteiger charges
             AllChem.ComputeGasteigerCharges(mol)
 
-            # Print assigned charges
-            print("\nAssigned Gasteiger Charges:")
-            for atom in mol.GetAtoms():
-                charge = atom.GetProp('_GasteigerCharge')
-                print(f"Atom: {atom.GetSymbol()}  Charge: {charge}")
-
-            # Save to temporary SDF format (RDKit doesn't support .mol2)
+            # Save to temporary SDF format as RDKit does not support .mol2
             sdf_file = pdb_file.replace(".pdb", "_charged.sdf")
             Chem.SDWriter(sdf_file).write(mol)
-            print(f"Partial charges saved temporarily to: {sdf_file}")
 
             # Convert SDF to MOL2 using Open Babel
             mol2_file = pdb_file.replace(".pdb", "_charged.mol2")
             os.system(f"obabel {sdf_file} -O {mol2_file}")
 
-            print(f"Final MOL2 file saved: {mol2_file}")
             return mol2_file
 
         except Exception as e:
