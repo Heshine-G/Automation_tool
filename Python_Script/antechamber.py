@@ -31,4 +31,4 @@ def run_antechamber(input_mol2):
         print(f"Error running antechamber: {e}")
 
 
-run_antechamber("MLU_10.mol2")
+run_antechamber("MVA.mol2")
