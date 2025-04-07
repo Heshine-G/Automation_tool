@@ -10,7 +10,7 @@ def run_antechamber(input_mol2):
     residue_name = base_name.upper()
 
     # Define output file names
-    ac_output = f"{base_name}.ac"  # Change from .ac to .mc
+    ac_output = f"{base_name}.ac"  
     mol2_output = f"{base_name}.mol2"
     lib_output = f"{base_name}.lib"
     prepin_output = f"{base_name}.prepin"
